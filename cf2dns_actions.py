@@ -81,8 +81,8 @@ def changeDNS(line, s_info, c_info, domain, sub_domain, qcloud):
         line = "移动"
     elif line == "CU":
         line = "联通"
-    elif line == "CT":
-        line = "电信"
+#    elif line == "CT":
+#        line = "电信"
     else:
         print("CHANGE DNS ERROR: ----Time: " + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "----MESSAGE: LINE ERROR")
         return
