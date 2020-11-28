@@ -159,8 +159,8 @@ def main(qcloud):
                                     log_cf2dns.logger.error("DELETE DNS ERROR: ----Time: "  + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "----DOMAIN: " + domain + "----SUBDOMAIN: " + sub_domain + "----RECORDLINE: "+record["line"] + "----MESSAGE: " + retMsg["message"] )
                     ret = qcloud.get(module='cns', action='RecordList', domain=domain, length=100, subDomain=sub_domain, recordType="A")
                     if ret["code"] == 0:
-                        if "Free" in ret["data"]["domain"]["grade"] and AFFECT_NUM > 2:
-                            AFFECT_NUM = 2
+                        if "Free" in ret["data"]["domain"]["grade"] and AFFECT_NUM > 1:
+                            AFFECT_NUM = 1
                         cm_info = []
                         cu_info = []
                         ct_info = []
@@ -169,7 +169,7 @@ def main(qcloud):
                                 info = {}
                                 info["recordId"] = record["id"]
                                 info["value"] = record["value"]
-                                cm_info.append(info)
+                                ct_info.append(info)
                             if record["line"] == "联通":
                                 info = {}
                                 info["recordId"] = record["id"]
@@ -179,14 +179,14 @@ def main(qcloud):
                                 info = {}
                                 info["recordId"] = record["id"]
                                 info["value"] = record["value"]
-                                ct_info.append(info)
+                                cm_info.append(info)
                         for line in lines:
                             if line == "CM":
-                                changeDNS("CM", cm_info, temp_cf_cmips, domain, sub_domain, qcloud)
+                                changeDNS("CM", ct_info, temp_cf_cmips, domain, sub_domain, qcloud)
                             elif line == "CU":
                                 changeDNS("CU", cu_info, temp_cf_cuips, domain, sub_domain, qcloud)
                             elif line == "CT":
-                                changeDNS("CT", ct_info, temp_cf_ctips, domain, sub_domain, qcloud)
+                                changeDNS("CT", cm_info, temp_cf_ctips, domain, sub_domain, qcloud)
         except Exception as e:
             log_cf2dns.logger.error("CHANGE DNS ERROR: ----Time: " + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "----MESSAGE: " + str(e))
 
