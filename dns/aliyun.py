@@ -86,3 +86,4 @@ class AliApi():
         result = clt.do_action(request).decode('utf-8')
         result = json.JSONDecoder().decode(result)
         return result
+
