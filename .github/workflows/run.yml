@@ -5,10 +5,13 @@ on:
     branches: 
       - master
   schedule:
-    - cron: '*/32 * * * *'
+    - cron: '*/16 * * * *'
   watch:
     types: [started]
 
+env:
+  UPDATE_IPV4: true
+  UPDATE_IPV6: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,10 +24,19 @@ jobs:
           python-version: 3.7
       - name: 'Install dependencies'
         run: if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: 'run cf2dns'
+      - name: 'run cf2dns v4'
+        if: env.UPDATE_IPV4 == 'true' && !cancelled()
         env:
           KEY: ${{ secrets.KEY }}
           DOMAINS: ${{ secrets.DOMAINS }}
           SECRETID: ${{ secrets.SECRETID }}
           SECRETKEY: ${{ secrets.SECRETKEY }}
-        run: python cf2dns_actions.py
+        run: python cf2dns_actions.py A
+      - name: 'run cf2dns v6'
+        if: env.UPDATE_IPV6 == 'true' && !cancelled()
+        env:
+          KEY: ${{ secrets.KEY }}
+          DOMAINS: ${{ secrets.DOMAINSV6 }}
+          SECRETID: ${{ secrets.SECRETID }}
+          SECRETKEY: ${{ secrets.SECRETKEY }}
+        run: python cf2dns_actions.py AAAA
